@@ -449,7 +449,7 @@ func TestPreExec(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCoverageCollector("", false)
 			_ = c.Setup()
-			_, _, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, PreExec(tt.preCmdFuncs...))
+			_, _, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, "", PreExec(tt.preCmdFuncs...))
 			if tt.wantErr {
 				require.Error(t, err)
 				require.Equal(t, tt.wantErrMsg, err.Error())
@@ -506,7 +506,7 @@ func TestPostExec(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCoverageCollector("", false)
 			_ = c.Setup()
-			_, _, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, PostExec(tt.postCmdFuncs...))
+			_, _, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, "", PostExec(tt.postCmdFuncs...))
 			if tt.wantErr {
 				require.Error(t, err)
 				require.Equal(t, tt.wantErrMsg, err.Error())
@@ -737,12 +737,12 @@ func TestCoverageCollector_RunBinary(t *testing.T) {
 				require.PanicsWithValue(t,
 					tt.panicMessage,
 					func() {
-						_, _, _ = c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, tt.cmdFuncs...)
+						_, _, _ = c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, "", tt.cmdFuncs...)
 					},
 				)
 				return
 			}
-			gotOutput, gotExitCode, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, tt.cmdFuncs...)
+			gotOutput, gotExitCode, err := c.RunBinary(tt.args.binPath, tt.args.mainTestName, tt.args.env, tt.args.args, "", tt.cmdFuncs...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RunBinary() error = %v, wantErr %v", err, tt.wantErr)
 				return

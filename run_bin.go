@@ -101,8 +101,8 @@ func PostExec(postCmdFuncs ...PostCmdFunc) CoverageCollectorOption {
 	}
 }
 
-// RunBinary runs the instrumented binary at binPath with env environment variables, executing only the test with mainTestName with the specified args.
-func (c *CoverageCollector) RunBinary(binPath string, mainTestName string, env []string, args []string, options ...CoverageCollectorOption) (output string, exitCode int, err error) {
+// RunBinary runs the instrumented binary at binPath with env environment variables and dir as working directory, executing only the test with mainTestName with the specified args.
+func (c *CoverageCollector) RunBinary(binPath string, mainTestName string, env []string, args []string, dir string, options ...CoverageCollectorOption) (output string, exitCode int, err error) {
 	if !c.setupFinished {
 		panic("RunBinary called before Setup")
 	}
@@ -126,6 +126,7 @@ func (c *CoverageCollector) RunBinary(binPath string, mainTestName string, env [
 	}
 	cmd := exec.Command(binPath, strings.Split(binArgs, " ")...)
 	cmd.Env = append(os.Environ(), env...)
+	cmd.Dir = dir
 	for _, cmdFunc := range c.preCmdFuncs {
 		if err := cmdFunc(cmd); err != nil {
 			return "", -1, err
